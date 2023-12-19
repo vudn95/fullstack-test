@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./web.dockerFile
+    ports:
+      - "3003:3000"
+    networks:
+      - fullstack
+    volumes:
+      - ${ROOT_DIR}/frontend:/usr/src/app
+    entrypoint: bash "/usr/src/app/entrypoint.sh"
+networks:
+  fullstack:
+    external: true

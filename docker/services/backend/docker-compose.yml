@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./app.dockerFile
+    ports:
+      - "3002:3000"
+    networks:
+      - fullstack
+    volumes:
+      - ${ROOT_DIR}/backend:/usr/src/app
+    entrypoint: bash "/usr/src/app/entrypoint.sh"
+networks:
+  fullstack:
+    external: true
