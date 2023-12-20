@@ -1,3 +1,4 @@
+import { request } from "./utils/request";
 import React, {
   createContext,
   useContext,
@@ -8,12 +9,16 @@ import React, {
 } from "react";
 
 interface AuthState {
+  isLoadingProfile: boolean;
   isAuthenticated: boolean;
   user: IUser | null;
+  accessToken?: string;
 }
 
 interface AuthContextType extends AuthState {
-  login: (user: IUser) => void;
+  setAccessToken: (value: string) => void;
+  setLoadingProfile: (value: boolean) => void;
+  setUserData: (user: IUser) => void;
   logout: () => void;
 }
 
@@ -24,15 +29,25 @@ interface AuthProviderProps {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const initialState: AuthState = {
+  isLoadingProfile: false,
   isAuthenticated: false,
   user: null,
 };
 
-type AuthAction = { type: "LOGIN"; payload: IUser } | { type: "LOGOUT" };
+type AuthAction =
+  | { type: "SET-USER-DATA"; payload: IUser }
+  | { type: "LOGOUT" }
+  | { type: "SET-LOADING-PROFILE"; payload: boolean }
+  | { type: "SET-ACCESS-TOKEN"; payload: string };
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
-    case "LOGIN":
+    case "SET-ACCESS-TOKEN":
+      return {
+        ...state,
+        accessToken: action.payload,
+      };
+    case "SET-USER-DATA":
       return {
         ...state,
         isAuthenticated: true,
@@ -41,8 +56,14 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     case "LOGOUT":
       return {
         ...state,
+        isLoadingProfile: false,
         isAuthenticated: false,
         user: null,
+      };
+    case "SET-LOADING-PROFILE":
+      return {
+        ...state,
+        isLoadingProfile: action.payload,
       };
     default:
       return state;
@@ -52,9 +73,18 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  const login = useCallback((user: IUser) => {
+  const setAccessToken = (token: string) => {
+    localStorage.setItem("accessToken", JSON.stringify(token));
+    dispatch({ type: "SET-ACCESS-TOKEN", payload: token });
+  };
+
+  const setLoadingProfile = (loading: boolean) => {
+    dispatch({ type: "SET-LOADING-PROFILE", payload: loading });
+  };
+
+  const setUserData = useCallback((user: IUser, isAfterLogin?: boolean) => {
     localStorage.setItem("userData", JSON.stringify(user));
-    dispatch({ type: "LOGIN", payload: user });
+    dispatch({ type: "SET-USER-DATA", payload: user });
   }, []);
 
   const logout = () => {
@@ -62,17 +92,35 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch({ type: "LOGOUT" });
   };
 
+  // Check user data on localstorage when loading app first time
   useEffect(() => {
-    const storedUser = localStorage.getItem("userData");
+    const accessToken = localStorage.getItem("accessToken");
 
-    if (storedUser) {
-      const parsedUser: IUser = JSON.parse(storedUser);
-      login(parsedUser);
+    if (accessToken) {
+      try {
+        setLoadingProfile(true);
+        request({}, { Authorization: `Bearer ${accessToken}` })
+          .get("/auth/my-profie")
+          .then((responseData) => {
+            setUserData(responseData.data);
+            setLoadingProfile(false);
+          });
+      } catch (err) {
+        setLoadingProfile(false);
+      }
     }
-  }, [login]);
+  }, [setUserData]);
 
   return (
-    <AuthContext.Provider value={{ ...state, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        ...state,
+        setUserData,
+        setAccessToken,
+        setLoadingProfile,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

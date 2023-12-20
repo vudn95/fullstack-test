@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import request from "../../../utils/request";
 import { StyledContainer } from "./styles";
 import { useAuth } from "../../../AuthContext";
+import { useState } from "react";
 
 const schema = yup.object().shape({
   email: yup.string().required("Email is required").email("Email invalid"),
@@ -21,27 +22,41 @@ function Component() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<Inputs>({
     mode: "onChange",
     resolver: yupResolver(schema),
   });
 
-  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const { setAccessToken, setUserData, setLoadingProfile } = useAuth();
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
     try {
-      const responseData = await request().post("/auth/signin", data);
-      login(responseData as unknown as IUser);
-      navigate("/dashboard/profile");
-      console.log("responseData: ", responseData);
-    } catch (err) {
-      console.log("err: ", err);
+      setLoading(true);
+      request()
+        .post("/auth/signin", data)
+        .then((responseData) => {
+          setLoadingProfile(true);
+          setAccessToken(responseData?.data?.accessToken as string);
+          request(
+            {},
+            { Authorization: `Bearer ${responseData?.data?.accessToken}` }
+          )
+            .get("/auth/my-profie")
+            .then((responseDataUser) => {
+              setUserData(responseDataUser.data);
+              setLoadingProfile(false);
+              navigate("/dashboard/profile");
+            });
+        });
+    } catch (err: any) {
+      setError("password", { message: err?.response?.data?.message });
     }
+    setLoading(false);
   };
-
-  console.log("errors: ", errors);
 
   return (
     <StyledContainer>
@@ -53,6 +68,7 @@ function Component() {
           variant="standard"
           error={!!errors.email}
           helperText={errors.email?.message}
+          disabled={loading}
           {...register("email")}
         />
         <TextField
@@ -61,12 +77,14 @@ function Component() {
           variant="standard"
           error={!!errors.password}
           helperText={errors.password?.message}
+          type="password"
+          disabled={loading}
           {...register("password")}
         />
         <p>
           Don't have an account yet? <Link to="/auth/signup">Sign Up</Link>
         </p>
-        <Button variant="contained" type="submit">
+        <Button variant="contained" type="submit" disabled={loading}>
           Sign In
         </Button>
       </form>

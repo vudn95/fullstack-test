@@ -5,6 +5,7 @@ import * as yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import request from "../../../utils/request";
 import { StyledContainer } from "./styles";
+import { useState } from "react";
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First Name is required"),
@@ -29,22 +30,30 @@ function Component() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<Inputs>({
     mode: "onChange",
     resolver: yupResolver(schema),
   });
 
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
     try {
+      setLoading(true);
       const responseData = await request().post("/auth/signup", data);
       navigate("/auth/signin");
       console.log("responseData: ", responseData);
-    } catch (err) {
-      console.log("err: ", err);
+    } catch (err: any) {
+      if (err?.response?.data?.message?.email === "AlreadyExists") {
+        setError("email", { message: "This email is already exists" });
+      } else {
+        // some thing went wrong here
+      }
     }
+    setLoading(false);
   };
 
   console.log("errors: ", errors);
@@ -59,6 +68,7 @@ function Component() {
           variant="standard"
           error={!!errors.firstName}
           helperText={errors.firstName?.message}
+          disabled={loading}
           {...register("firstName")}
         />
         <TextField
@@ -67,6 +77,7 @@ function Component() {
           variant="standard"
           error={!!errors.lastName}
           helperText={errors.lastName?.message}
+          disabled={loading}
           {...register("lastName")}
         />
         <TextField
@@ -75,6 +86,7 @@ function Component() {
           variant="standard"
           error={!!errors.email}
           helperText={errors.email?.message}
+          disabled={loading}
           {...register("email")}
         />
         <TextField
@@ -84,6 +96,7 @@ function Component() {
           error={!!errors.password}
           helperText={errors.password?.message}
           type="password"
+          disabled={loading}
           {...register("password")}
         />
         <TextField
@@ -93,9 +106,10 @@ function Component() {
           error={!!errors.passwordConfirm}
           helperText={errors.passwordConfirm?.message}
           type="password"
+          disabled={loading}
           {...register("passwordConfirm")}
         />
-        <Button variant="contained" type="submit">
+        <Button variant="contained" type="submit" disabled={loading}>
           Sign Up
         </Button>
         <p>
