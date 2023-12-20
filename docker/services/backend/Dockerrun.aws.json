@@ -1,0 +1,12 @@
+{
+    "AWSEBDockerrunVersion": "1",
+    "Image": {
+      "Name": "127589690210.dkr.ecr.ap-southeast-2.amazonaws.com/fullstack_test:800a202",
+      "Update": "true"
+    },
+    "Ports": [
+      {
+        "ContainerPort": 3000
+      }
+    ]
+  }

@@ -1,16 +1,18 @@
 version: "3.8"
 services:
   web:
+    container_name: frontend_web
     build:
-      context: .
-      dockerfile: ./web.dockerFile
+      context: ${ROOT_DIR}/frontend/.
+      dockerfile: ${ROOT_DIR}/frontend/web.dockerFile
     ports:
       - "3003:3000"
     networks:
       - fullstack
     volumes:
       - ${ROOT_DIR}/frontend:/usr/src/app
-    entrypoint: bash "/usr/src/app/entrypoint.sh"
+    env_file:
+      - ${ROOT_DIR}/frontend/.env
 networks:
   fullstack:
     external: true

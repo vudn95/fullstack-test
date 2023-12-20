@@ -1,0 +1,36 @@
+Arguments: 
+  /Users/ipaymy/.nvm/versions/node/v16.14.2/bin/node /Users/ipaymy/.nvm/versions/node/v16.14.2/bin/yarn add typeorm-ts-node-esm
+
+PATH: 
+  /Users/ipaymy/.bun/bin:/Users/ipaymy/.nvm/versions/node/v16.14.2/bin:/opt/homebrew/opt/openjdk@11/bin:/opt/homebrew/opt/php@8.0/sbin:/opt/homebrew/opt/php@8.0/bin:/Users/ipaymy/.nvm/versions/node/v16.14.2/bin:/Users/ipaymy/.goenv/versions/1.21.0/bin:/Users/ipaymy/.goenv/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/opt/homebrew/opt/openjdk@11/bin:/opt/homebrew/opt/php@8.0/sbin:/opt/homebrew/opt/php@8.0/bin:/Users/ipaymy/.nvm/versions/node/v16.14.2/bin:/Users/ipaymy/.goenv/versions/1.21.0/bin:/Users/ipaymy/.goenv/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/ipaymy/.bun/bin:/opt/homebrew/opt/openjdk@11/bin:/opt/homebrew/opt/php@8.0/sbin:/opt/homebrew/opt/php@8.0/bin:/Users/ipaymy/.goenv/versions/1.21.0/bin:/Users/ipaymy/.goenv/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/ipaymy/.nvm/versions/node/v16.14.2/bin:/Users/ipaymy/.goenv/shims:/Users/ipaymy/go/1.21.0/bin:/Users/ipaymy/go/1.21.0/bin:/Users/ipaymy/go/1.21.0/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  16.14.2
+
+Platform: 
+  darwin arm64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/typeorm-ts-node-esm: Not found
+      at Request.params.callback [as _callback] (/Users/ipaymy/.nvm/versions/node/v16.14.2/lib/node_modules/yarn/lib/cli.js:66145:18)
+      at Request.self.callback (/Users/ipaymy/.nvm/versions/node/v16.14.2/lib/node_modules/yarn/lib/cli.js:140890:22)
+      at Request.emit (node:events:526:28)
+      at Request.<anonymous> (/Users/ipaymy/.nvm/versions/node/v16.14.2/lib/node_modules/yarn/lib/cli.js:141862:10)
+      at Request.emit (node:events:526:28)
+      at IncomingMessage.<anonymous> (/Users/ipaymy/.nvm/versions/node/v16.14.2/lib/node_modules/yarn/lib/cli.js:141784:12)
+      at Object.onceWrapper (node:events:645:28)
+      at IncomingMessage.emit (node:events:538:35)
+      at endReadableNT (node:internal/streams/readable:1345:12)
+      at processTicksAndRejections (node:internal/process/task_queues:83:21)
+
+npm manifest: 
+  No manifest
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

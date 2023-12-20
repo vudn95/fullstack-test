@@ -1,16 +1,18 @@
 version: "3.8"
 services:
   app:
+    container_name: backend_app
     build:
-      context: .
-      dockerfile: ./app.dockerFile
+      context: ${ROOT_DIR}/backend/.
+      dockerfile: ${ROOT_DIR}/backend/app.dockerFile
     ports:
       - "3002:3000"
     networks:
       - fullstack
     volumes:
       - ${ROOT_DIR}/backend:/usr/src/app
-    entrypoint: bash "/usr/src/app/entrypoint.sh"
+    env_file:
+      - ${ROOT_DIR}/backend/.env
 networks:
   fullstack:
     external: true

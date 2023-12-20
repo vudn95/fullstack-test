@@ -1,0 +1,5 @@
+Build date: 2023-12-20 09:05:17\ncommit e682373ec365f8e969fd41a5976549e1d83643f1
+Author: Vu Dang <dnvu.24h@gmail.com>
+Date:   Wed Dec 20 10:37:50 2023 +0700
+
+    Update docker deployment\nBranch: docker
