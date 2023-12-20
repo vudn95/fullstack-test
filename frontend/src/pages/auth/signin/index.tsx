@@ -36,11 +36,11 @@ function Component() {
   const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
     try {
       setLoading(true);
-      request()
+      await request()
         .post("/auth/signin", data)
         .then((responseData) => {
           setLoadingProfile(true);
-          setAccessToken(responseData?.data?.accessToken as string);
+          setAccessToken(responseData?.data);
           request(
             {},
             { Authorization: `Bearer ${responseData?.data?.accessToken}` }

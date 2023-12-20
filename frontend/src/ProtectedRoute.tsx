@@ -3,9 +3,10 @@ import { useAuth } from "./AuthContext";
 import { CircularProgress } from "@mui/material";
 
 function Component({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoadingProfile } = useAuth();
+  const { isAuthenticated, isLoadingProfile, user, isHasAccessToken } =
+    useAuth();
 
-  if (isLoadingProfile) {
+  if (isLoadingProfile || (isHasAccessToken() && !Boolean(user))) {
     return <CircularProgress />;
   }
 

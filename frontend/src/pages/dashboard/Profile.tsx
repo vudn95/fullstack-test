@@ -1,10 +1,10 @@
-import Button from "@mui/material/Button";
+import { useAuth } from "../../AuthContext";
 
 function Component() {
+  const { user } = useAuth();
+
   return (
-    <div className="Component">
-      <Button variant="contained">Profile</Button>
-    </div>
+    <div className="Component">{user && <p>{JSON.stringify(user)}</p>}</div>
   );
 }
 

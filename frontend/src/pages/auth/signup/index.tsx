@@ -43,20 +43,17 @@ function Component() {
   const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
     try {
       setLoading(true);
-      const responseData = await request().post("/auth/signup", data);
+      await request().post("/auth/signup", data);
       navigate("/auth/signin");
-      console.log("responseData: ", responseData);
     } catch (err: any) {
       if (err?.response?.data?.message?.email === "AlreadyExists") {
         setError("email", { message: "This email is already exists" });
       } else {
-        // some thing went wrong here
+        // handle some thing went wrong here
       }
     }
     setLoading(false);
   };
-
-  console.log("errors: ", errors);
 
   return (
     <StyledContainer>
